@@ -19,7 +19,7 @@
     version: 4.2
 - git:
     local-name: hydra_ros
-    uri: git@github.com:MIT-SPARK/Hydra-ROS.git
+    uri: git@github.com/Assume-Zhan/Hydra-ROS.git
 - git:
     local-name: kimera_pgmo
     uri: git@github.com:MIT-SPARK/Kimera-PGMO.git
