@@ -1,0 +1,43 @@
+version: '3'
+services:
+  hydra-gpu:
+    build: 
+      context: .
+      args:
+        USERNAME: user
+    image: assume/hydra-baseline
+    container_name: hydra-gpu
+    stdin_open: true
+    tty: true
+    privileged: true
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+    command: /bin/bash
+    network_mode: host
+    working_dir: /home/user
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_WS=/home/user/hydra
+    volumes:
+      # Mount local timezone into container. ( Readonly )
+      # Reference: https://stackoverflow.com/questions/57607381/how-do-i-change-timezone-in-a-docker-container
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      # Mount X11 server
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      # Direct Rendering Infrastructure
+      - /dev/dri:/dev/dri
+      # Mount sound card to prevent Gazebo warning.
+      - /dev/snd:/dev/snd
+      # Mount Gazebo models directory to reuse models downloaded during first launch.
+      # Reference: https://answers.ros.org/question/365658
+      - ./cache/.gazebo:/home/user/.gazebo
+      # Mount workspace
+      - ..:/home/user/catkin_ws/src/hydra
